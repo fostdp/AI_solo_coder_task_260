@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交通路口信号灯配时模拟</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚦 交通路口信号灯配时模拟</h1>
+            <p>调整信号灯参数，优化通行效率，减少拥堵！</p>
+        </header>
+        
+        <main>
+            <div class="simulation-area">
+                <canvas id="trafficCanvas" width="800" height="600"></canvas>
+                <div class="overlay">
+                    <div class="stats">
+                        <span>🚗 通行量: <strong id="throughput">0</strong></span>
+                        <span>🚦 周期: <strong id="cycleDisplay">60s</strong></span>
+                        <span>⚠️ 拥堵指数: <strong id="congestion">0</strong></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-panel">
+                <div class="panel-section">
+                    <h3>🎮 游戏控制</h3>
+                    <div class="button-group">
+                        <button id="startBtn" class="btn btn-primary">开始模拟</button>
+                        <button id="pauseBtn" class="btn btn-secondary">暂停</button>
+                        <button id="resetBtn" class="btn btn-danger">重置</button>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>🎛️ 控制模式</h3>
+                    <div class="mode-selector">
+                        <label><input type="radio" name="signalMode" value="fixed" checked> 固定配时</label>
+                        <label><input type="radio" name="signalMode" value="actuated"> 感应式信号</label>
+                        <label><input type="radio" name="signalMode" value="greenWave"> 绿波控制</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="busPriority"> 公交优先模式</label>
+                        <label><input type="checkbox" id="pedestrianEnabled"> 启用行人过街</label>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>⏱️ 信号灯配置</h3>
+                    <div class="slider-group">
+                        <label>信号周期: <span id="cycleValue">60</span>秒</label>
+                        <input type="range" id="cycleSlider" min="30" max="120" value="60">
+                    </div>
+                    <div class="slider-group">
+                        <label>南北向绿信比: <span id="nsGreenValue">50</span>%</label>
+                        <input type="range" id="nsGreenSlider" min="20" max="80" value="50">
+                    </div>
+                    <div class="slider-group">
+                        <label>东西向绿信比: <span id="ewGreenValue">50</span>%</label>
+                        <input type="range" id="ewGreenSlider" min="20" max="80" value="50">
+                    </div>
+                    <div id="actuatedOptions" class="hidden">
+                        <div class="slider-group">
+                            <label>最小绿灯时间: <span id="minGreenValue">10</span>秒</label>
+                            <input type="range" id="minGreenSlider" min="5" max="30" value="10">
+                        </div>
+                        <div class="slider-group">
+                            <label>车辆检测距离: <span id="detectionValue">100</span>米</label>
+                            <input type="range" id="detectionSlider" min="50" max="200" value="100">
+                        </div>
+                    </div>
+                    <div id="greenWaveOptions" class="hidden">
+                        <div class="slider-group">
+                            <label>绿波速度: <span id="waveSpeedValue">40</span>km/h</label>
+                            <input type="range" id="waveSpeedSlider" min="20" max="80" value="40">
+                        </div>
+                        <div class="slider-group">
+                            <label>绿波带宽: <span id="bandwidthValue">30</span>%</label>
+                            <input type="range" id="bandwidthSlider" min="10" max="60" value="30">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>🚗 车流量设置</h3>
+                    <div class="slider-group">
+                        <label>南北向车流量: <span id="nsFlowValue">5</span>辆/秒</label>
+                        <input type="range" id="nsFlowSlider" min="1" max="15" value="5">
+                    </div>
+                    <div class="slider-group">
+                        <label>东西向车流量: <span id="ewFlowValue">5</span>辆/秒</label>
+                        <input type="range" id="ewFlowSlider" min="1" max="15" value="5">
+                    </div>
+                    <div class="slider-group">
+                        <label>公交比例: <span id="busRatioValue">10</span>%</label>
+                        <input type="range" id="busRatioSlider" min="0" max="30" value="10">
+                    </div>
+                </div>
+                
+                <div id="pedestrianSection" class="panel-section hidden">
+                    <h3>🚶 行人设置</h3>
+                    <div class="slider-group">
+                        <label>行人流量: <span id="pedFlowValue">3</span>人/秒</label>
+                        <input type="range" id="pedFlowSlider" min="0" max="10" value="3">
+                    </div>
+                    <div class="slider-group">
+                        <label>行人过街时间: <span id="pedCrossTimeValue">15</span>秒</label>
+                        <input type="range" id="pedCrossTimeSlider" min="5" max="30" value="15">
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>📁 路口数据</h3>
+                    <div class="button-group">
+                        <button id="importDataBtn" class="btn btn-secondary">导入路口数据</button>
+                        <button id="compareBtn" class="btn btn-info">方案对比</button>
+                    </div>
+                    <input type="file" id="dataFileInput" accept=".json" style="display: none;">
+                    <div id="dataInfo" class="data-info"></div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>📊 统计数据</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">总通行车辆</span>
+                            <span class="stat-value" id="totalCars">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">平均等待时间</span>
+                            <span class="stat-value" id="avgWaitTime">0s</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">最大排队长度</span>
+                            <span class="stat-value" id="maxQueue">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">当前拥堵车辆</span>
+                            <span class="stat-value" id="currentCongestion">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>💾 配时方案</h3>
+                    <button id="saveSchemeBtn" class="btn btn-success">保存当前方案</button>
+                    <button id="loadSchemeBtn" class="btn btn-info">加载最佳方案</button>
+                    <div id="schemeList" class="scheme-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

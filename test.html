@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交通流模型与信号控制算法测试</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧪 交通流模型与信号控制算法测试套件</h1>
+            <p>自动化测试：跟驰模型、Webster配时、延误计算、信号灯控制逻辑</p>
+        </header>
+
+        <main>
+            <div class="test-controls">
+                <button id="runAllBtn" class="btn btn-primary">运行所有测试</button>
+                <button id="runSelectedBtn" class="btn btn-secondary">运行选中测试</button>
+                <button id="exportBtn" class="btn btn-info">导出测试报告</button>
+            </div>
+
+            <div class="test-summary" id="testSummary">
+                <div class="summary-item">
+                    <span class="label">总测试数</span>
+                    <span class="value" id="totalTests">0</span>
+                </div>
+                <div class="summary-item passed">
+                    <span class="label">✅ 通过</span>
+                    <span class="value" id="passedTests">0</span>
+                </div>
+                <div class="summary-item failed">
+                    <span class="label">❌ 失败</span>
+                    <span class="value" id="failedTests">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">⏱️ 耗时</span>
+                    <span class="value" id="testDuration">0ms</span>
+                </div>
+            </div>
+
+            <div class="test-categories">
+                <div class="category-card">
+                    <h3>🚗 跟驰模型测试 (Car-Following)</h3>
+                    <p>验证车辆加速、减速、安全距离保持逻辑</p>
+                    <div class="test-list" id="carFollowingTests"></div>
+                </div>
+
+                <div class="category-card">
+                    <h3>⏱️ Webster配时公式验证</h3>
+                    <p>验证最佳周期计算、绿信比分配、流量饱和度</p>
+                    <div class="test-list" id="websterTests"></div>
+                </div>
+
+                <div class="category-card">
+                    <h3>📊 平均延误计算测试</h3>
+                    <p>验证Webster延误公式、HCM 2010延误模型</p>
+                    <div class="test-list" id="delayTests"></div>
+                </div>
+
+                <div class="category-card">
+                    <h3>🚦 信号灯控制逻辑测试</h3>
+                    <p>验证相位切换、黄灯时长、感应式控制</p>
+                    <div class="test-list" id="signalTests"></div>
+                </div>
+
+                <div class="category-card">
+                    <h3>🔀 换道模型测试 (Lane-Changing)</h3>
+                    <p>验证换道决策、安全间隙、目标车道选择</p>
+                    <div class="test-list" id="laneChangeTests"></div>
+                </div>
+            </div>
+
+            <div class="test-detail" id="testDetail">
+                <h3>📋 测试详情</h3>
+                <div id="testOutput">点击"运行所有测试"开始测试...</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="traffic-models.js"></script>
+    <script src="test-runner.js"></script>
+    <script src="tests.js"></script>
+</body>
+</html>

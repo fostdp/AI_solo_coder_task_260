@@ -1,0 +1,13 @@
+{
+  "intersectionName": "中关村大街与知春路交叉口",
+  "source": "北京市交通管理局 2024年数据",
+  "cycleLength": 90,
+  "nsGreenRatio": 0.55,
+  "ewGreenRatio": 0.45,
+  "nsFlowRate": 12,
+  "ewFlowRate": 8,
+  "peakHour": "8:00-9:00",
+  "busRatio": 0.15,
+  "pedestrianFlow": 5,
+  "description": "工作日早高峰配时方案，南北向主干道优先"
+}
